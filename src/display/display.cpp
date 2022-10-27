@@ -85,12 +85,18 @@ void Display::drawScreen()
    {
       for (int x = 0; x < SCREEN_WIDTH; x++)
       {
-         if ((y * SCREEN_WIDTH + x) % 2)
-            display[x][y] = true;
          if (display[x][y])
          {
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void *)((y * SCREEN_WIDTH + x) * 6 * sizeof(unsigned int))); // draw 2 triangles from EBO
          }
       }
+   }
+}
+
+void Display::flipBit(int x, int y)
+{
+   if (x < SCREEN_WIDTH && y < SCREEN_HEIGHT)
+   {
+      display[x][y] = !display[x][y];
    }
 }

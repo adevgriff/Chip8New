@@ -17,6 +17,7 @@
 #include "constants.hpp"
 #include "display/display.hpp"
 #include "chip/ram.hpp"
+#include "chip/cpu.hpp"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -25,6 +26,9 @@ int main()
 {
    Display display;
    Ram ram;
+   ram.loadProgram("IBM Logo.ch8", 512);
+   CPU cpu(&ram, &display);
+   cpu.setStart(START_OF_PROGRAM);
    //---------------------------------------------------glfw setup----------------------------------------------------------------------
    glfwInit();
 
@@ -98,15 +102,36 @@ int main()
 
    //-------------------------------------------------------------------------------------------------------------------------------------
 
+   display.clearScreen();
+   double currentFrame = glfwGetTime();
+   double lastFrame = currentFrame;
+   double deltaTime;
+   double accumulator = 0;
+   // six hundreths of a second here so I can change while I am working on this
+   // move this as a constant in constants TODO
+   double speed = 6.0 / 100.0;
+
    // main window loop
    while (!glfwWindowShouldClose(window))
    {
+      // get delta time
+      currentFrame = glfwGetTime();
+      deltaTime = currentFrame - lastFrame;
+      lastFrame = currentFrame;
+      accumulator += deltaTime;
+
       // process input
 
       // render
       glClearColor(0.1f, 0.5f, 0.4f, 1.0f); // set color for clearing window to black
       glClear(GL_COLOR_BUFFER_BIT);         // clear window
 
+      // run one execute cycle
+      if (accumulator >= speed)
+      {
+         cpu.execute();
+         accumulator -= speed;
+      }
       //------------------------draw screen---------------------------
       // bind vertex array
       glBindVertexArray(VAO);

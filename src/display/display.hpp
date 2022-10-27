@@ -20,6 +20,7 @@ public:
 
    void clearScreen();
    void drawScreen();
+   void flipBit(int x, int y);
 };
 
 #endif

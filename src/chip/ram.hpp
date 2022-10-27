@@ -32,7 +32,12 @@ private:
 
 public:
    Ram();
-   void loadProgram(std::string programFile);
+   void loadProgram(std::string programFile, unsigned int startPoint);
+   void printRam();
+   void writeAddress(uint8_t byte, uint16_t address);
+   uint8_t readByte(uint16_t address);
+   uint16_t readLSigFirst(uint16_t address);
+   uint16_t readMSigFirst(uint16_t address);
 };
 
 #endif
