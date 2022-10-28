@@ -9,6 +9,7 @@
 #include <string>
 #include <stdlib.h>
 #include <time.h>
+#include <cstdlib>
 
 #include "chip/chip_encodings.hpp"
 #include "shader/shader.hpp"
@@ -20,13 +21,13 @@
 #include "chip/cpu.hpp"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
-void processInput(GLFWwindow *window);
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
 
 int main()
 {
    Display display;
    Ram ram;
-   ram.loadProgram("IBM Logo.ch8", 512);
+   ram.loadProgram("Most Dangerous Game [Peter Maruhnic].ch8", 512);
    CPU cpu(&ram, &display);
    cpu.setStart(START_OF_PROGRAM);
    //---------------------------------------------------glfw setup----------------------------------------------------------------------
@@ -54,6 +55,7 @@ int main()
 
    // set window context
    glfwMakeContextCurrent(window);
+   glfwSetWindowUserPointer(window, &cpu);
 
    // initalize glad
    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -65,7 +67,7 @@ int main()
    }
 
    // set callbacks
-
+   glfwSetKeyCallback(window, key_callback);
    glViewport(0, 0, SCREEN_WIDTH * PIXEL_SIZE, SCREEN_HEIGHT * PIXEL_SIZE);
    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
@@ -109,7 +111,7 @@ int main()
    double accumulator = 0;
    // six hundreths of a second here so I can change while I am working on this
    // move this as a constant in constants TODO
-   double speed = 6.0 / 100.0;
+   double speed = 6.0 / 1000.0;
 
    // main window loop
    while (!glfwWindowShouldClose(window))
@@ -129,6 +131,7 @@ int main()
       // run one execute cycle
       if (accumulator >= speed)
       {
+         srand(glfwGetTime());
          cpu.execute();
          accumulator -= speed;
       }
@@ -158,6 +161,57 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
    glViewport(0, 0, width, height);
 }
 
-void processInput(GLFWwindow *window)
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
+   switch (key)
+   {
+   case GLFW_KEY_1:
+      reinterpret_cast<CPU *>(glfwGetWindowUserPointer(window))->keyUpdate(0x01, (action == GLFW_PRESS));
+      break;
+   case GLFW_KEY_2:
+      reinterpret_cast<CPU *>(glfwGetWindowUserPointer(window))->keyUpdate(0x02, (action == GLFW_PRESS));
+      break;
+   case GLFW_KEY_3:
+      reinterpret_cast<CPU *>(glfwGetWindowUserPointer(window))->keyUpdate(0x03, (action == GLFW_PRESS));
+      break;
+   case GLFW_KEY_Q:
+      reinterpret_cast<CPU *>(glfwGetWindowUserPointer(window))->keyUpdate(0x04, (action == GLFW_PRESS));
+      break;
+   case GLFW_KEY_W:
+      reinterpret_cast<CPU *>(glfwGetWindowUserPointer(window))->keyUpdate(0x05, (action == GLFW_PRESS));
+      break;
+   case GLFW_KEY_E:
+      reinterpret_cast<CPU *>(glfwGetWindowUserPointer(window))->keyUpdate(0x06, (action == GLFW_PRESS));
+      break;
+   case GLFW_KEY_A:
+      reinterpret_cast<CPU *>(glfwGetWindowUserPointer(window))->keyUpdate(0x07, (action == GLFW_PRESS));
+      break;
+   case GLFW_KEY_D:
+      reinterpret_cast<CPU *>(glfwGetWindowUserPointer(window))->keyUpdate(0x09, (action == GLFW_PRESS));
+      break;
+   case GLFW_KEY_F:
+      reinterpret_cast<CPU *>(glfwGetWindowUserPointer(window))->keyUpdate(0x0E, (action == GLFW_PRESS));
+      break;
+   case GLFW_KEY_Z:
+      reinterpret_cast<CPU *>(glfwGetWindowUserPointer(window))->keyUpdate(0x0A, (action == GLFW_PRESS));
+      break;
+   case GLFW_KEY_X:
+      reinterpret_cast<CPU *>(glfwGetWindowUserPointer(window))->keyUpdate(0x00, (action == GLFW_PRESS));
+      break;
+   case GLFW_KEY_C:
+      reinterpret_cast<CPU *>(glfwGetWindowUserPointer(window))->keyUpdate(0x0B, (action == GLFW_PRESS));
+      break;
+   case GLFW_KEY_S:
+      reinterpret_cast<CPU *>(glfwGetWindowUserPointer(window))->keyUpdate(0x08, (action == GLFW_PRESS));
+      break;
+   case GLFW_KEY_V:
+      reinterpret_cast<CPU *>(glfwGetWindowUserPointer(window))->keyUpdate(0x0F, (action == GLFW_PRESS));
+      break;
+   case GLFW_KEY_R:
+      reinterpret_cast<CPU *>(glfwGetWindowUserPointer(window))->keyUpdate(0x0D, (action == GLFW_PRESS));
+      break;
+   case GLFW_KEY_4:
+      reinterpret_cast<CPU *>(glfwGetWindowUserPointer(window))->keyUpdate(0x0C, (action == GLFW_PRESS));
+      break;
+   }
 }

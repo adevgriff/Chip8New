@@ -4,7 +4,7 @@ Ram::Ram()
 {
    for (int i = 0; i < 80; i++)
    {
-      ram[i + 80] = font[i];
+      ram[i + START_OF_FONT] = font[i];
    }
 }
 
